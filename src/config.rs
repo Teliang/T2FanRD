@@ -42,6 +42,7 @@ impl FromStr for SpeedCurve {
 pub struct FanConfig {
     pub low_temp: u8,
     pub high_temp: u8,
+    pub max_speed: u32,
     pub speed_curve: SpeedCurve,
     pub always_full_speed: bool,
 }
@@ -56,6 +57,7 @@ impl FanConfig {
             .set("high_temp", self.high_temp.to_string())
             .set("speed_curve", self.speed_curve.to_string())
             .set("always_full_speed", self.always_full_speed.to_string())
+            .set("max_speed", self.max_speed.to_string())
     }
 }
 
@@ -64,6 +66,7 @@ impl Default for FanConfig {
         Self {
             low_temp: 55,
             high_temp: 75,
+            max_speed: 8000,
             speed_curve: SpeedCurve::Linear,
             always_full_speed: false,
         }
@@ -86,6 +89,7 @@ impl TryFrom<&ini::Properties> for FanConfig {
             high_temp: get_value(properties, "high_temp")?,
             speed_curve: get_value(properties, "speed_curve")?,
             always_full_speed: get_value(properties, "always_full_speed")?,
+            max_speed: get_value(properties, "max_speed")?,
         })
     }
 }
