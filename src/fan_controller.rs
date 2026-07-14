@@ -32,6 +32,12 @@ impl FanController {
             .parse()
             .map_err(Error::MinSpeedParse)?;
 
+        let max_speed = std::fs::read_to_string(join_suffix(path.clone(), "_max"))
+            .map_err(Error::MaxSpeedRead)?
+            .trim_end()
+            .parse()
+            .map_err(Error::MaxSpeedParse)?;
+
         let mut open_options = std::fs::OpenOptions::new();
         open_options.write(true).truncate(true);
 
@@ -48,7 +54,7 @@ impl FanController {
             output_file,
             config,
             min_speed,
-            max_speed: config.max_speed,
+            max_speed: std::cmp::min(config.max_speed, max_speed),
         };
 
         println!("Found fan: {this:#?}");
